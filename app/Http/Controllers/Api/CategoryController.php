@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\CompanyCategory;
+use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    use ApiResponse;
     /**
      * Display a listing of the resource.
      */
@@ -19,7 +21,10 @@ class CategoryController extends Controller
             ->when($request->keyword, fn($q) => $q->where('title', 'like', '%' . $request->keyword . '%'))
             ->paginate(10);
 
-        return CategoryResource::collection($categories);
+        return $this->successResponse(
+            CategoryResource::collection($categories),
+            'Category Fetched Successfully.'
+        );
     }
 
     /**
@@ -29,7 +34,11 @@ class CategoryController extends Controller
     {
         $category = CompanyCategory::create($request->validated());
 
-        return new CategoryResource($category);
+        return $this->successResponse(
+            new CategoryResource($category),
+            'Category created successfully',
+            201
+        );
     }
 
     /**
@@ -37,29 +46,25 @@ class CategoryController extends Controller
      */
     public function show(CompanyCategory $category)
     {
-        $category->load('category');
-        return new CategoryResource($category);
+        $category->load('companies');
+        return $this->successResponse(new CategoryResource($category));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(CategoryRequest $request, CompanyCategory $category)
     {
-        $request->validate(['title' => 'required|string|max:255']);
-        $category = CompanyCategory::findOrFail($id);
         $category->update($request->only('title'));
-
-        return new CategoryResource($category);
+        return $this->successResponse(new CategoryResource($category), 'Category updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(CompanyCategory $category)
     {
-        $category = CompanyCategory::findOrFail($id);
         $category->delete();
-        return response()->json(['message' => 'Category deleted successfully']);
+        return $this->successResponse(null, 'Category deleted successfully');
     }
 }
