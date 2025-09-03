@@ -14,6 +14,15 @@ class CompanyResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'status' => (bool) $this->status,
+            'image' => $this->image ? asset('storage/' . $this->image) : null,
+            'category' => new CategoryResource($this->whenLoaded('category')),
+            'created_at' => $this->created_at->toDateTimeString(),
+            'updated_at' => $this->updated_at->toDateTimeString()
+        ];
     }
 }

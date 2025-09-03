@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CompanyRequest;
+use App\Http\Resources\CompanyResource;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -15,21 +17,15 @@ class CompanyController extends Controller
     public function index()
     {
         $companies = Company::with('category')->paginate(10);
-        return response()->json($companies);
+        return CompanyResource::collection($companies);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CompanyRequest $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'status' => 'required|boolean',
-            'image' => 'nullable|image|max:2048'
-        ]);
-
-        $data = $request->all();
+        $data = $request->validated();
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('companies', 'public');
@@ -37,7 +33,7 @@ class CompanyController extends Controller
 
         $company = Company::create($data);
 
-        return response()->json($company, 201);
+        return new CompanyResource($company->load('category'));
     }
 
     /**
@@ -46,26 +42,18 @@ class CompanyController extends Controller
     public function show(string $id)
     {
         $company = Company::with('category')->findOrFail($id);
-        return response()->json($company);
+        return new CompanyResource($company);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(CompanyRequest $request, string $id)
     {
         $company = Company::findOrFail($id);
-
-        $request->validate([
-            'title' => 'sometimes|required|string|max:255',
-            'status' => 'sometimes|required|boolean',
-            'image' => 'nullable|image|max:2048'
-        ]);
-
-        $data = $request->all();
+        $data = $request->validated();
 
         if ($request->hasFile('image')) {
-            // delete old image
             if ($company->image && Storage::disk('public')->exists($company->image)) {
                 Storage::disk('public')->delete($company->image);
             }
@@ -74,7 +62,7 @@ class CompanyController extends Controller
 
         $company->update($data);
 
-        return response()->json($company);
+        return new CompanyResource($company->load('category'));
     }
 
     /**
@@ -89,6 +77,7 @@ class CompanyController extends Controller
         }
 
         $company->delete();
+
         return response()->json(['message' => 'Company deleted successfully']);
     }
 }

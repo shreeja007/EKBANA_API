@@ -11,7 +11,7 @@ class CompanyRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,11 @@ class CompanyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title'       => 'required|string|max:255',
+            'status'      => 'required|boolean',
+            'description' => 'nullable|string',
+            'category_id' => 'nullable|exists:company_categories,id',
+            'image'       => 'nullable|image|max:2048',
         ];
     }
 }

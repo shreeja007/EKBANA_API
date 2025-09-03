@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
+use App\Http\Resources\CategoryResource;
 use App\Models\CompanyCategory;
 use Illuminate\Http\Request;
 
@@ -18,7 +19,7 @@ class CategoryController extends Controller
             ->when($request->keyword, fn($q) => $q->where('title', 'like', '%' . $request->keyword . '%'))
             ->paginate(10);
 
-        return response()->json($categories);
+        return CategoryResource::collection($categories);
     }
 
     /**
@@ -28,10 +29,7 @@ class CategoryController extends Controller
     {
         $category = CompanyCategory::create($request->validated());
 
-        return response()->json([
-            'message' => 'Cayegory created successfully',
-            'data' => $category
-        ], 201);
+        return new CategoryResource($category);
     }
 
     /**
@@ -40,7 +38,7 @@ class CategoryController extends Controller
     public function show(CompanyCategory $category)
     {
         $category->load('category');
-        return response()->json($category);
+        return new CategoryResource($category);
     }
 
     /**
@@ -51,7 +49,8 @@ class CategoryController extends Controller
         $request->validate(['title' => 'required|string|max:255']);
         $category = CompanyCategory::findOrFail($id);
         $category->update($request->only('title'));
-        return response()->json($category);
+
+        return new CategoryResource($category);
     }
 
     /**
