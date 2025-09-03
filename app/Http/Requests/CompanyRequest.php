@@ -26,7 +26,7 @@ class CompanyRequest extends FormRequest
             'status'      => 'required|boolean',
             'description' => 'nullable|string',
             'category_id' => 'nullable|exists:company_categories,id',
-            'image'       => 'nullable|image|max:2048',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
 }

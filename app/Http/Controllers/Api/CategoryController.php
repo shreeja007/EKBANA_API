@@ -22,7 +22,7 @@ class CategoryController extends Controller
             ->paginate(10);
 
         return $this->successResponse(
-            CategoryResource::collection($categories),
+            CategoryResource::collection($categories)->response()->getData(true),
             'Category Fetched Successfully.'
         );
     }

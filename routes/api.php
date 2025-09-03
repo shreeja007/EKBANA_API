@@ -11,15 +11,15 @@ Route::get('/user', function (Request $request) {
 
 Route::middleware('check.api.key')->group(function(){
     Route::get('/category', [CategoryController::class, 'index']);
-    Route::get('/category/{id}', [CategoryController::class, 'show']);
+    Route::get('/category/{category}', [CategoryController::class, 'show']);
     Route::post('/category', [CategoryController::class, 'store']);
-    Route::put('/category/{id}', [CategoryController::class, 'update']);
-    Route::delete('/category/{id}', [CategoryController::class, 'destroy']);
+    Route::put('/category/{category}', [CategoryController::class, 'update']);
+    Route::delete('/category/{category}', [CategoryController::class, 'destroy']);
 
     Route::get('/company', [CompanyController::class, 'index']);
-    Route::get('/company/{id}', [CompanyController::class, 'show']);
+    Route::get('/company/{company}', [CompanyController::class, 'show']);
     Route::post('/company', [CompanyController::class, 'store']);
-    Route::put('/company/{id}', [CompanyController::class, 'update']);
-    Route::delete('/company/{id}', [CompanyController::class, 'destroy']);
+    Route::put('/company/{company}', [CompanyController::class, 'update']);
+    Route::delete('/company/{company}', [CompanyController::class, 'destroy']);
 });
 

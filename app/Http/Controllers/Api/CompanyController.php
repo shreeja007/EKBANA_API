@@ -21,7 +21,7 @@ class CompanyController extends Controller
     {
         $companies = Company::with('category')->paginate(10);
         return $this->successResponse(
-            CompanyResource::collection($companies),
+            CompanyResource::collection($companies)->response()->getData(true),
             'Company Fetched Successfully.'
         );
     }
