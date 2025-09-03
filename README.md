@@ -1,61 +1,66 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# EKBANA API Project
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Description
+A Laravel-based API service for managing companies and categories. Features include:
 
-## About Laravel
+- CRUD operations for **categories** and **companies**  
+- Image upload support for companies  
+- Search categories using keyword  
+- Pagination (10 records per page)  
+- API key authentication middleware  
+- Proper handling of relationships (companies linked to categories)  
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Setup Instructions
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. Clone the repository:
+```bash
+git clone <YOUR_GITHUB_LINK>
+cd <PROJECT_FOLDER>
 
-## Learning Laravel
+2. Install dependencies: 
+composer install
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+3. Copy .env.example to .env and configure database:
+cp .env.example .env
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+4. Set the API key in .env:
+API_KEY=BA673A414C3B44C98478BB5CF10A0F832574090C
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+5. Run migrations:
+php artisan migrate
 
-## Laravel Sponsors
+6. Serve the project:
+php artisan serve
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+##  API Endpoints
+Headers
+All API requests require the header:
+API_KEY: BA673A414C3B44C98478BB5CF10A0F832574090C
 
-### Premium Partners
+Category API
+Method	URL	Description
+GET	/api/category	List all categories (paginated 10)
+GET	/api/category/{id}	Get category details + related companies
+POST	/api/category	Create category
+PUT	/api/category/{id}	Update category
+DELETE	/api/category/{id}	Delete category
+GET	/api/category?keyword=	Search categories by keyword
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Company API
+Method	URL	Description
+GET	/api/company	List all companies (paginated 10) with category info
+GET	/api/company/{id}	Get company details with category info
+POST	/api/company	Create company (support image upload)
+PUT	/api/company/{id}	Update company (update image if provided)
+DELETE	/api/company/{id}	Delete company (image deleted if exists)
 
-## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Features / Extras
+Resource Responses: Used CategoryResource and CompanyResource for controlled API responses.
+Category-Company Relationship: nullOnDelete() ensures companies remain even if their category is deleted.
+Keyword Search: Optional query parameter for category search.
+Pagination: 10 records per page; can be configured in controllers.
+Middleware: API key validation for all endpoints.
+Image Upload: Supports storing images in storage/app/public/companies and updating/deleting them automatically.

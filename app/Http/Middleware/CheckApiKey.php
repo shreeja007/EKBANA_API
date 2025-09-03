@@ -17,7 +17,7 @@ class CheckApiKey
     {
         $apikey = $request->header('API_KEY');
 
-        if($apikey !== 'BA673A414C3B44C98478BB5CF10A0F832574090C'){
+        if($apikey !== env('API_KEY')){
             return response()->json([
                 'error' => 'Unauthorized. invalid API Key.'
             ],401);
